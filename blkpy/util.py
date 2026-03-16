@@ -1,11 +1,14 @@
 import subprocess
 import shlex
 import json
+import logging
 
 # create a function that runs suprocess and returns the output
 def run_command(command):
+    logging.info("run_command: {command}")
     cmd = shlex.split(command)
     output = subprocess.check_output(cmd)
+    logging.debug("runcommand result: {output}")
     return output
 
 def run_lsblk(device):
@@ -26,6 +29,7 @@ def run_lsblk(device):
     command = f'lsblk -J -o NAME,SIZE,TYPE,MOUNTPOINT'
     output = run_command(command)
     devices = json.loads(output)['blockdevices']
+    logging.debug("devices found: {devices}")
     for parent in devices:
         if parent['name'] == device:
             return parent
